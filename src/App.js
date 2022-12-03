@@ -9,6 +9,7 @@ import {
 	Card,
 	ActionIcon,
 	Code,
+	Alert,
 } from '@mantine/core';
 import { useState, useRef, useEffect } from 'react';
 import { MoonStars, Sun, Trash } from 'tabler-icons-react';
@@ -24,6 +25,7 @@ import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 export default function App() {
 	const [tasks, setTasks] = useState([]);
 	const [opened, setOpened] = useState(false);
+	const [titleInputError, setTitleInputError] = useState(null);
 
 	const preferredColorScheme = useColorScheme();
 	const [colorScheme, setColorScheme] = useLocalStorage({
@@ -40,6 +42,9 @@ export default function App() {
 	const taskSummary = useRef('');
 
 	function createTask() {
+		if (!taskTitle.current.value) return setTitleInputError("Title can't be empty");
+
+		setTitleInputError("");
 		setTasks([
 			...tasks,
 			{
@@ -55,6 +60,7 @@ export default function App() {
 				summary: taskSummary.current.value,
 			},
 		]);
+		setOpened(false);
 	}
 
 	function deleteTask(index) {
@@ -81,6 +87,12 @@ export default function App() {
 		localStorage.setItem('tasks', JSON.stringify(tasks));
 	}
 
+
+	function openModal() {
+		setOpened(true);
+		setTitleInputError(null);
+	}
+
 	useEffect(() => {
 		loadTasks();
 	}, []);
@@ -103,6 +115,9 @@ export default function App() {
 							setOpened(false);
 						}}
 						centered>
+						{titleInputError && <Alert title="Ooops!" color="red">
+							{titleInputError}
+						</Alert>}
 						<TextInput
 							mt={'md'}
 							ref={taskTitle}
@@ -125,10 +140,7 @@ export default function App() {
 								Cancel
 							</Button>
 							<Button
-								onClick={() => {
-									createTask();
-									setOpened(false);
-								}}>
+								onClick={createTask}>
 								Create Task
 							</Button>
 						</Group>
@@ -140,7 +152,7 @@ export default function App() {
 									fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 									fontWeight: 900,
 								})}>
-								My Tasks
+								My Tasks App
 							</Title>
 							<ActionIcon
 								color={'blue'}
@@ -157,7 +169,7 @@ export default function App() {
 							tasks.map((task, index) => {
 								if (task.title) {
 									return (
-										<Card withBorder key={index} mt={'sm'}>
+										<Card withBorder key={index} mt={'sm'} data-testid="task-card">
 											<Group position={'apart'}>
 												<Text weight={'bold'}>{task.title}</Text>
 												<ActionIcon
@@ -184,9 +196,7 @@ export default function App() {
 							</Text>
 						)}
 						<Button
-							onClick={() => {
-								setOpened(true);
-							}}
+							onClick={openModal}
 							fullWidth
 							mt={'md'}>
 							New Task
