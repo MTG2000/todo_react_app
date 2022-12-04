@@ -1,6 +1,6 @@
 import { render, screen, waitForElementToBeRemoved, within } from "@testing-library/react"
 import '@testing-library/jest-dom'
-import App from "./App"
+import Tasks from "./Tasks"
 import userEvent from "@testing-library/user-event"
 
 describe("Todo App", () => {
@@ -10,19 +10,19 @@ describe("Todo App", () => {
     })
 
     it("Renders correctly", () => {
-        render(<App />)
+        render(<Tasks />)
         const heading = screen.getByRole('heading', { level: 1 });
         expect(heading).toBeInTheDocument()
     })
 
     it("Starts with an empty list", () => {
-        render(<App />)
+        render(<Tasks />)
         const emptyMsg = screen.getByText(/No tasks/i)
         expect(emptyMsg).toBeInTheDocument()
     })
 
     it("Open new task modal", async () => {
-        render(<App />)
+        render(<Tasks />)
 
         const newTaskBtn = screen.getByRole('button', { name: /New Task/i });
         await userEvent.click(newTaskBtn);
@@ -32,7 +32,7 @@ describe("Todo App", () => {
     })
 
     it("Show error on empty title", async () => {
-        render(<App />)
+        render(<Tasks />)
 
         const newTaskBtn = screen.getByRole('button', { name: /New Task/i });
         await userEvent.click(newTaskBtn);
@@ -49,7 +49,7 @@ describe("Todo App", () => {
     })
 
     it("Creates a new task", async () => {
-        render(<App />)
+        render(<Tasks />)
 
         await createTask({ title: "Task 1 title", summary: "Task 1 summary" });
         const newTask = screen.getByText(/Task 1 title/i);
@@ -57,7 +57,7 @@ describe("Todo App", () => {
     })
 
     it("Creates 2 tasks", async () => {
-        render(<App />)
+        render(<Tasks />)
 
         await createTask({ title: "Task 1 title", summary: "Task 1 summary" });
         await createTask({ title: "Task 2 title", summary: "Task 2 summary" });
@@ -73,7 +73,7 @@ describe("Todo App", () => {
     })
 
     it("Deletes a task", async () => {
-        render(<App />)
+        render(<Tasks />)
 
         await createTask({ title: "Task To Delete", summary: "Task 1 summary" });
 
