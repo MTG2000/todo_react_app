@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event"
 
 describe('Parent Component', () => {
 
-    it('renders correctly', () => {
+    it('renders correctly now', () => {
         render(<Parent />);
         const elm = screen.getByText(/Parent:/);
         expect(elm).toBeInTheDocument();
